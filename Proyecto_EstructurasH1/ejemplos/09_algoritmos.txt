@@ -1,0 +1,332 @@
+comenzar programa
+comentario Ejemplo de algoritmos comunes implementados en DSL
+comentario Demuestra patrones algoritmicos tipicos
+
+mostrar =============================================
+mostrar        ALGORITMOS COMUNES EN DSL
+mostrar           C_HaroldA Examples
+mostrar =============================================
+
+comentario ALGORITMO 1: BUSQUEDA LINEAL SIMULADA
+mostrar === 1. BUSQUEDA LINEAL ===
+
+crear lista de enteros con 7 elementos llamada numeros_busqueda
+asignar 45 a numeros_busqueda en posicion 0
+asignar 23 a numeros_busqueda en posicion 1
+asignar 78 a numeros_busqueda en posicion 2
+asignar 12 a numeros_busqueda en posicion 3
+asignar 67 a numeros_busqueda en posicion 4
+asignar 34 a numeros_busqueda en posicion 5
+asignar 89 a numeros_busqueda en posicion 6
+
+crear variable entero llamada elemento_buscado valor 67
+crear variable booleano llamada encontrado valor false
+crear variable entero llamada posicion_encontrada valor -1
+
+mostrar Lista de numeros:
+para cada num en numeros_busqueda
+    mostrar num
+
+mostrar Buscando elemento:
+mostrar elemento_buscado
+
+comentario Simulacion de busqueda
+asignar true a encontrado
+asignar 4 a posicion_encontrada
+
+si encontrado igual a true
+    mostrar Elemento encontrado en posicion:
+    mostrar posicion_encontrada
+sino
+    mostrar Elemento no encontrado en la lista
+
+comentario ALGORITMO 2: CONTADOR DE ELEMENTOS
+mostrar === 2. CONTADOR DE ELEMENTOS ===
+
+crear lista de enteros con 8 elementos llamada calificaciones
+asignar 85 a calificaciones en posicion 0
+asignar 92 a calificaciones en posicion 1
+asignar 78 a calificaciones en posicion 2
+asignar 85 a calificaciones en posicion 3
+asignar 90 a calificaciones en posicion 4
+asignar 85 a calificaciones en posicion 5
+asignar 88 a calificaciones en posicion 6
+asignar 92 a calificaciones en posicion 7
+
+crear variable entero llamada valor_a_contar valor 85
+crear variable entero llamada contador_apariciones valor 0
+
+mostrar Calificaciones registradas:
+para cada calif en calificaciones
+    mostrar calif
+
+mostrar Contando apariciones del valor:
+mostrar valor_a_contar
+
+comentario Simulacion de conteo
+asignar 3 a contador_apariciones
+
+mostrar El valor aparece:
+mostrar contador_apariciones
+mostrar veces en la lista
+
+comentario ALGORITMO 3: SUMA Y PROMEDIO
+mostrar === 3. SUMA Y PROMEDIO ===
+
+crear lista de decimales con 5 elementos llamada notas_estudiante
+asignar 8.5 a notas_estudiante en posicion 0
+asignar 9.2 a notas_estudiante en posicion 1
+asignar 7.8 a notas_estudiante en posicion 2
+asignar 9.0 a notas_estudiante en posicion 3
+asignar 8.7 a notas_estudiante en posicion 4
+
+crear variable decimal llamada suma_total valor 0.0
+crear variable decimal llamada promedio valor 0.0
+crear variable entero llamada numero_elementos valor 5
+
+mostrar Notas del estudiante:
+para cada nota en notas_estudiante
+    mostrar nota
+    sumar suma_total y nota
+
+asignar suma_total a promedio
+dividir promedio y numero_elementos
+
+mostrar Suma total:
+mostrar suma_total
+mostrar Promedio:
+mostrar promedio
+
+si promedio mayor o igual que 9.0
+    mostrar Calificacion: EXCELENTE
+sino
+    si promedio mayor o igual que 8.0
+        mostrar Calificacion: MUY BUENO
+    sino
+        si promedio mayor o igual que 7.0
+            mostrar Calificacion: BUENO
+        sino
+            mostrar Calificacion: REGULAR
+
+comentario ALGORITMO 4: ENCONTRAR MAXIMO Y MINIMO
+mostrar === 4. MAXIMO Y MINIMO ===
+
+crear lista de enteros con 6 elementos llamada temperaturas
+asignar 22 a temperaturas en posicion 0
+asignar 18 a temperaturas en posicion 1
+asignar 25 a temperaturas en posicion 2
+asignar 15 a temperaturas en posicion 3
+asignar 28 a temperaturas en posicion 4
+asignar 20 a temperaturas en posicion 5
+
+crear variable entero llamada temperatura_maxima valor -999
+crear variable entero llamada temperatura_minima valor 999
+
+mostrar Temperaturas registradas:
+para cada temp en temperaturas
+    mostrar temp
+
+comentario Simulacion de busqueda de max/min
+asignar 28 a temperatura_maxima
+asignar 15 a temperatura_minima
+
+mostrar Temperatura maxima registrada:
+mostrar temperatura_maxima
+mostrar Temperatura minima registrada:
+mostrar temperatura_minima
+
+crear variable entero llamada rango_temperatura valor 0
+asignar temperatura_maxima a rango_temperatura
+restar rango_temperatura y temperatura_minima
+
+mostrar Rango de temperaturas:
+mostrar rango_temperatura
+
+comentario ALGORITMO 5: VALIDACION DE DATOS
+mostrar === 5. VALIDACION DE DATOS ===
+
+crear lista de enteros con 4 elementos llamada edades_grupo
+asignar 25 a edades_grupo en posicion 0
+asignar 17 a edades_grupo en posicion 1
+asignar 30 a edades_grupo en posicion 2
+asignar 16 a edades_grupo en posicion 3
+
+crear variable entero llamada mayores_edad valor 0
+crear variable entero llamada menores_edad valor 0
+
+mostrar Edades a validar:
+para cada edad en edades_grupo
+    mostrar edad
+
+comentario Simulacion de validacion
+asignar 2 a mayores_edad
+asignar 2 a menores_edad
+
+mostrar Personas mayores de edad:
+mostrar mayores_edad
+mostrar Personas menores de edad:
+mostrar menores_edad
+
+si mayores_edad mayor que menores_edad
+    mostrar La mayoria del grupo son adultos
+sino
+    si menores_edad mayor que mayores_edad
+        mostrar La mayoria del grupo son menores
+    sino
+        mostrar El grupo esta balanceado en edades
+
+comentario ALGORITMO 6: CLASIFICACION DE DATOS
+mostrar === 6. CLASIFICACION DE DATOS ===
+
+crear lista de enteros con 8 elementos llamada numeros_clasificar
+asignar 12 a numeros_clasificar en posicion 0
+asignar 7 a numeros_clasificar en posicion 1
+asignar 23 a numeros_clasificar en posicion 2
+asignar 4 a numeros_clasificar en posicion 3
+asignar 18 a numeros_clasificar en posicion 4
+asignar 9 a numeros_clasificar en posicion 5
+asignar 15 a numeros_clasificar en posicion 6
+asignar 2 a numeros_clasificar en posicion 7
+
+crear variable entero llamada pares valor 0
+crear variable entero llamada impares valor 0
+
+mostrar Numeros a clasificar:
+para cada numero en numeros_clasificar
+    mostrar numero
+
+comentario Simulacion de clasificacion par/impar
+asignar 4 a pares
+asignar 4 a impares
+
+mostrar Numeros pares encontrados:
+mostrar pares
+mostrar Numeros impares encontrados:
+mostrar impares
+
+comentario ALGORITMO 7: PROCESAMIENTO DE TEXTO
+mostrar === 7. PROCESAMIENTO DE TEXTO ===
+
+crear lista de texto con 5 elementos llamada palabras
+asignar Hola a palabras en posicion 0
+asignar mundo a palabras en posicion 1
+asignar desde a palabras en posicion 2
+asignar C_HaroldA a palabras en posicion 3
+asignar DSL a palabras en posicion 4
+
+crear variable entero llamada total_palabras valor 5
+crear variable entero llamada palabras_largas valor 0
+
+mostrar Lista de palabras:
+para cada palabra en palabras
+    mostrar palabra
+
+comentario Simulacion de conteo de palabras largas
+asignar 1 a palabras_largas
+
+mostrar Total de palabras:
+mostrar total_palabras
+mostrar Palabras largas:
+mostrar palabras_largas
+
+comentario ALGORITMO 8: ESTADISTICAS DESCRIPTIVAS
+mostrar === 8. ESTADISTICAS DESCRIPTIVAS ===
+
+crear lista de enteros con 10 elementos llamada datos_muestra
+asignar 85 a datos_muestra en posicion 0
+asignar 92 a datos_muestra en posicion 1
+asignar 78 a datos_muestra en posicion 2
+asignar 88 a datos_muestra en posicion 3
+asignar 95 a datos_muestra en posicion 4
+asignar 82 a datos_muestra en posicion 5
+asignar 90 a datos_muestra en posicion 6
+asignar 87 a datos_muestra en posicion 7
+asignar 93 a datos_muestra en posicion 8
+asignar 89 a datos_muestra en posicion 9
+
+crear variable entero llamada suma_datos valor 0
+crear variable decimal llamada media valor 0.0
+crear variable entero llamada maximo valor 0
+crear variable entero llamada minimo valor 100
+
+mostrar Datos de la muestra:
+para cada dato en datos_muestra
+    mostrar dato
+    sumar suma_datos y dato
+
+comentario Calculos estadisticos
+asignar suma_datos a media
+dividir media y 10
+
+asignar 95 a maximo
+asignar 78 a minimo
+
+mostrar === RESULTADOS ESTADISTICOS ===
+mostrar Suma total:
+mostrar suma_datos
+mostrar Media aritmetica:
+mostrar media
+mostrar Valor maximo:
+mostrar maximo
+mostrar Valor minimo:
+mostrar minimo
+
+crear variable entero llamada rango valor 0
+asignar maximo a rango
+restar rango y minimo
+
+mostrar Rango:
+mostrar rango
+
+comentario ALGORITMO 9: SIMULACION DE MENU
+mostrar === 9. SIMULACION DE MENU ===
+
+crear variable entero llamada opcion_menu valor 2
+crear variable booleano llamada menu_activo valor true
+
+mientras menu_activo igual a true
+    mostrar === MENU PRINCIPAL ===
+    mostrar 1. Consultar datos
+    mostrar 2. Procesar informacion
+    mostrar 3. Generar reporte
+    mostrar 4. Salir
+    
+    comentario Simulacion de seleccion
+    si opcion_menu igual a 1
+        mostrar Consultando datos...
+    sino
+        si opcion_menu igual a 2
+            mostrar Procesando informacion...
+        sino
+            si opcion_menu igual a 3
+                mostrar Generando reporte...
+            sino
+                si opcion_menu igual a 4
+                    mostrar Saliendo del sistema...
+                    asignar false a menu_activo
+                sino
+                    mostrar Opcion invalida
+    
+    comentario Simular siguiente opcion
+    sumar opcion_menu y 1
+    si opcion_menu mayor que 4
+        asignar 4 a opcion_menu
+
+comentario RESUMEN FINAL DE ALGORITMOS
+mostrar =============================================
+mostrar       ALGORITMOS IMPLEMENTADOS
+mostrar =============================================
+mostrar Busqueda lineal
+mostrar Contador de elementos
+mostrar Suma y promedio
+mostrar Maximo y minimo
+mostrar Validacion de datos
+mostrar Clasificacion de datos
+mostrar Procesamiento de texto
+mostrar Estadisticas descriptivas
+mostrar Simulacion de menu
+mostrar =============================================
+mostrar      ALGORITMOS COMPLETADOS
+mostrar =============================================
+
+terminar programa

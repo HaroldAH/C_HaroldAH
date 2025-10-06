@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>qml;cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>qrc;rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Translation Files">
+      <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
+      <Extensions>ts</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="Proyecto_EstructurasH1.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+    <QtUic Include="Proyecto_EstructurasH1.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtMoc Include="Proyecto_EstructurasH1.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Instruction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Proyecto_EstructurasH1_Safe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NaturalLanguageProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DslList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Proyecto_EstructurasH1_Clean.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    
+    
+    
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LinkedList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Instruction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NaturalLanguageProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DslList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ejemplo_lenguaje_natural.txt" />
+    <Text Include="ejemplo_avanzado.txt" />
+    <Text Include="pruebas_funcionalidades.txt" />
+    <Text Include="configuracion_proyecto.txt" />
+    <Text Include="prueba_simple.txt" />
+    <Text Include="ejemplo_lenguaje_natural_HaroldA.txt" />
+    <Text Include="ejemplo_avanzado_HaroldA.txt" />
+    <Text Include="pruebas_completas_HaroldA.txt" />
+    <Text Include="prueba_sintaxis_invalida.txt" />
+    <Text Include="prueba_sintaxis_valida.txt" />
+    <Text Include="test_errores_dsl.txt" />
+    <Text Include="test_sintaxis_correcta.txt" />
+    <Text Include="test_errores_no_crash.txt" />
+    <Text Include="test_errores_multiples.txt" />
+    <Text Include="test_sintaxis_perfecta.txt" />
+    <Text Include="test_acumulacion_errores.txt" />
+    <Text Include="test_validacion_numerica.txt" />
+    <Text Include="test_edicion_tiempo_real.txt" />
+    <Text Include="test_listas_dsl.txt" />
+    <Text Include="test_file_reload.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="zenitsu_styles_test.qss" />
+    <None Include="cambios_zenitsu_summary.md" />
+    <None Include="commit_messages_zenitsu.md" />
+    <None Include="zenitsu_animations_implementation.md" />
+    <None Include="ZENITSU_FINAL_SUMMARY.md" />
+    <None Include="zenitsu_shine_sweep_implementation.md" />
+    <None Include="zenitsu_help_dialog_implementation.md" />
+    <None Include="dsl_assistant_implementation.md" />
+    <None Include="dsl_assistant_summary.md" />
+    <None Include="dsl_assistant_final_success.md" />
+    <None Include="button_flow_implementation_summary.md" />
+    <None Include="MULTIPLE_SOURCE_FLOW_IMPLEMENTATION.md" />
+    <None Include="FILE_RELOAD_IMPLEMENTATION.md" />
+    <None Include="FILE_RELOAD_IMPROVED_FINAL.md" />
+    <None Include="LINKEDLIST_OPTIMIZATIONS_FINAL.md" />
+    <None Include="OPTIMIZATIONS_SUMMARY.md" />
+    <None Include="DSL_GUIDE_UPDATED_COMPLETE.md" />
+    <None Include="DSL_GUIDE_UPDATE_SUMMARY.md" />
+    <None Include="DSL_ASSISTANT_COMPLETE_UPDATE.md" />
+    <None Include="COMPILATION_ERRORS_FIXED.md" />
+    <None Include="COMPILATION_SUCCESS_SUMMARY.md" />
+  </ItemGroup>
+</Project>

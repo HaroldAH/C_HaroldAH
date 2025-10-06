@@ -1,0 +1,22 @@
+comenzar programa
+# Programa con condicionales y bucles
+crear variable entero llamada edad valor 0
+crear variable entero llamada contador valor 1
+
+mostrar Ingrese edades (0 para terminar)
+
+mientras contador menor o igual que 5
+    mostrar Edad persona
+    mostrar contador
+    
+    si edad igual a 0
+        mostrar Terminando programa
+    sino
+        si edad mayor o igual que 18
+            mostrar Mayor de edad
+        sino
+            mostrar Menor de edad
+    
+    sumar contador y 1
+
+terminar programa

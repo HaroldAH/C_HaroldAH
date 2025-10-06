@@ -1,0 +1,280 @@
+comenzar programa
+comentario Ejemplo avanzado de tipos de datos
+comentario Demuestra el uso completo de todos los tipos soportados
+
+mostrar =============================================
+mostrar     DEMO COMPLETA DE TIPOS DE DATOS
+mostrar           C_HaroldA Advanced
+mostrar =============================================
+
+comentario SECCION 1: VARIABLES ENTERAS
+mostrar === 1. VARIABLES ENTERAS ===
+
+crear variable entero llamada numero_positivo valor 42
+crear variable entero llamada numero_negativo valor -15
+crear variable entero llamada numero_cero valor 0
+crear variable entero llamada numero_grande valor 999999
+
+mostrar Numeros enteros definidos:
+mostrar Positivo:
+mostrar numero_positivo
+mostrar Negativo:
+mostrar numero_negativo
+mostrar Cero:
+mostrar numero_cero
+mostrar Grande:
+mostrar numero_grande
+
+comentario Operaciones con enteros
+crear variable entero llamada resultado_entero valor 0
+sumar numero_positivo y numero_negativo
+asignar numero_positivo a resultado_entero
+
+mostrar Resultado de operacion:
+mostrar resultado_entero
+
+comentario SECCION 2: VARIABLES DECIMALES
+mostrar === 2. VARIABLES DECIMALES ===
+
+crear variable decimal llamada pi valor 3.14159
+crear variable decimal llamada precio valor 29.99
+crear variable decimal llamada temperatura valor -5.5
+crear variable decimal llamada porcentaje valor 75.8
+
+mostrar Numeros decimales definidos:
+mostrar Pi aproximado:
+mostrar pi
+mostrar Precio del producto:
+mostrar precio
+mostrar Temperatura:
+mostrar temperatura
+mostrar Porcentaje:
+mostrar porcentaje
+
+comentario Operaciones con decimales
+crear variable decimal llamada area_circulo valor 0.0
+asignar pi a area_circulo
+multiplicar area_circulo y 5.0
+multiplicar area_circulo y 5.0
+
+mostrar Area de circulo con radio 5:
+mostrar area_circulo
+
+comentario SECCION 3: VARIABLES DE TEXTO
+mostrar === 3. VARIABLES DE TEXTO ===
+
+crear variable texto llamada nombre_completo valor Ana Maria Garcia Lopez
+crear variable texto llamada direccion valor Calle Principal 123
+crear variable texto llamada email valor ana.garcia@email.com
+crear variable texto llamada telefono valor 555-123-4567
+crear variable texto llamada mensaje valor Bienvenido al sistema C_HaroldA
+
+mostrar Informacion textual:
+mostrar Nombre:
+mostrar nombre_completo
+mostrar Direccion:
+mostrar direccion
+mostrar Email:
+mostrar email
+mostrar Telefono:
+mostrar telefono
+mostrar Mensaje del sistema:
+mostrar mensaje
+
+comentario SECCION 4: VARIABLES DE CARACTER
+mostrar === 4. VARIABLES DE CARACTER ===
+
+crear variable caracter llamada primera_letra valor A
+crear variable caracter llamada ultima_letra valor Z
+crear variable caracter llamada numero_char valor 5
+crear variable caracter llamada simbolo valor @
+
+mostrar Caracteres individuales:
+mostrar Primera letra del alfabeto:
+mostrar primera_letra
+mostrar Ultima letra del alfabeto:
+mostrar ultima_letra
+mostrar Numero como caracter:
+mostrar numero_char
+mostrar Simbolo especial:
+mostrar simbolo
+
+comentario SECCION 5: VARIABLES BOOLEANAS
+mostrar === 5. VARIABLES BOOLEANAS ===
+
+crear variable booleano llamada sistema_activo valor true
+crear variable booleano llamada modo_debug valor false
+crear variable booleano llamada usuario_premium valor true
+crear variable booleano llamada mantenimiento valor false
+
+mostrar Estados booleanos:
+mostrar Sistema activo:
+mostrar sistema_activo
+mostrar Modo debug:
+mostrar modo_debug
+mostrar Usuario premium:
+mostrar usuario_premium
+mostrar En mantenimiento:
+mostrar mantenimiento
+
+comentario Logica con booleanos
+si sistema_activo igual a true y mantenimiento igual a false
+    mostrar Sistema operativo y disponible
+sino
+    mostrar Sistema no disponible
+
+si usuario_premium igual a true
+    mostrar Acceso completo habilitado
+sino
+    mostrar Acceso basico habilitado
+
+comentario SECCION 6: LISTAS DE DIFERENTES TIPOS
+mostrar === 6. LISTAS DE DIFERENTES TIPOS ===
+
+comentario Lista de enteros
+crear lista de enteros con 5 elementos llamada numeros_fibonacci
+asignar 1 a numeros_fibonacci en posicion 0
+asignar 1 a numeros_fibonacci en posicion 1
+asignar 2 a numeros_fibonacci en posicion 2
+asignar 3 a numeros_fibonacci en posicion 3
+asignar 5 a numeros_fibonacci en posicion 4
+
+mostrar Secuencia Fibonacci:
+para cada fib en numeros_fibonacci
+    mostrar fib
+
+comentario Lista de decimales
+crear lista de decimales con 4 elementos llamada promedios_mensuales
+asignar 8.5 a promedios_mensuales en posicion 0
+asignar 9.2 a promedios_mensuales en posicion 1
+asignar 7.8 a promedios_mensuales en posicion 2
+asignar 9.0 a promedios_mensuales en posicion 3
+
+mostrar Promedios mensuales:
+para cada promedio en promedios_mensuales
+    mostrar promedio
+
+comentario Lista de texto
+crear lista de texto con 6 elementos llamada dias_semana
+asignar Lunes a dias_semana en posicion 0
+asignar Martes a dias_semana en posicion 1
+asignar Miercoles a dias_semana en posicion 2
+asignar Jueves a dias_semana en posicion 3
+asignar Viernes a dias_semana en posicion 4
+asignar Sabado a dias_semana en posicion 5
+
+mostrar Dias de la semana laborales:
+PORT cada dia en dias_semana
+    mostrar dia
+
+comentario Lista de caracteres
+crear lista de caracteres con 5 elementos llamada calificaciones_letra
+asignar A a calificaciones_letra en posicion 0
+asignar B a calificaciones_letra en posicion 1
+asignar C a calificaciones_letra en posicion 2
+asignar D a calificaciones_letra en posicion 3
+asignar F a calificaciones_letra en posicion 4
+
+mostrar Sistema de calificaciones por letras:
+para cada letra en calificaciones_letra
+    mostrar letra
+
+comentario SECCION 7: CONVERSIONES Y VALIDACIONES
+mostrar === 7. CONVERSIONES Y VALIDACIONES ===
+
+comentario Simulacion de conversiones
+crear variable entero llamada edad_numerica valor 25
+crear variable texto llamada edad_texto valor 25 anos
+
+mostrar Edad como numero:
+mostrar edad_numerica
+mostrar Edad como texto:
+mostrar edad_texto
+
+comentario Validaciones de rangos
+si edad_numerica mayor que 0 y edad_numerica menor que 150
+    mostrar Edad valida
+sino
+    mostrar Edad fuera de rango
+
+comentario SECCION 8: OPERACIONES MIXTAS
+mostrar === 8. OPERACIONES MIXTAS ===
+
+comentario Calculos con diferentes tipos
+crear variable entero llamada base valor 10
+crear variable decimal llamada altura valor 5.5
+crear variable decimal llamada area_rectangulo valor 0.0
+
+asignar base a area_rectangulo
+multiplicar area_rectangulo y altura
+
+mostrar Calculo de area:
+mostrar Base:
+mostrar base
+mostrar Altura:
+mostrar altura
+mostrar Area:
+mostrar area_rectangulo
+
+comentario SECCION 9: EJEMPLOS PRACTICOS
+mostrar === 9. EJEMPLOS PRACTICOS ===
+
+comentario Sistema de inventario simplificado
+crear variable texto llamada producto valor Laptop HP
+crear variable entero llamada cantidad valor 15
+crear variable decimal llamada precio_unitario valor 899.99
+crear variable booleano llamada disponible valor true
+
+si disponible igual a true y cantidad mayor que 0
+    mostrar Producto en stock:
+    mostrar producto
+    mostrar Cantidad disponible:
+    mostrar cantidad
+    mostrar Precio unitario:
+    mostrar precio_unitario
+    
+    crear variable decimal llamada valor_total valor 0.0
+    asignar cantidad a valor_total
+    multiplicar valor_total y precio_unitario
+    
+    mostrar Valor total del inventario:
+    mostrar valor_total
+sino
+    mostrar Producto no disponible
+
+comentario Informacion de empleado
+crear variable texto llamada nombre_empleado valor Carlos Mendoza
+crear variable entero llamada id_empleado valor 1001
+crear variable caracter llamada turno valor M
+crear variable booleano llamada activo valor true
+crear variable decimal llamada salario valor 2500.50
+
+mostrar === INFORMACION DE EMPLEADO ===
+mostrar Nombre:
+mostrar nombre_empleado
+mostrar ID:
+mostrar id_empleado
+mostrar Turno:
+mostrar turno
+mostrar Estado activo:
+mostrar activo
+mostrar Salario:
+mostrar salario
+
+comentario RESUMEN FINAL
+mostrar =============================================
+mostrar          RESUMEN DE TIPOS DE DATOS
+mostrar =============================================
+mostrar Enteros: numeros sin decimales
+mostrar Decimales: numeros con punto decimal
+mostrar Texto: cadenas de caracteres
+mostrar Caracter: un solo simbolo
+mostrar Booleanos: true/false
+mostrar Listas: colecciones de cualquier tipo
+mostrar Operaciones: funciones con todos los tipos
+mostrar Validaciones: comprobaciones logicas
+mostrar =============================================
+mostrar     DEMO DE TIPOS COMPLETADA
+mostrar =============================================
+
+terminar programa

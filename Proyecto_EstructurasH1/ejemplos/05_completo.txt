@@ -1,0 +1,47 @@
+comenzar programa
+comentario Programa completo con todas las caracteristicas
+
+# Variables de diferentes tipos
+crear variable entero llamada total valor 0
+crear variable decimal llamada promedio valor 0.0
+crear variable texto llamada nombre valor Sistema
+crear variable booleano llamada activo valor true
+
+# Lista para almacenar numeros
+crear lista de enteros con 5 elementos llamada calificaciones
+
+# Cargar datos simulados
+mostrar === Sistema de Calificaciones ===
+asignar 85 a calificaciones en posicion 0
+asignar 92 a calificaciones en posicion 1
+asignar 78 a calificaciones en posicion 2
+asignar 95 a calificaciones en posicion 3
+asignar 68 a calificaciones en posicion 4
+
+# Calcular suma
+para cada nota en calificaciones
+    sumar total y nota
+
+# Calcular promedio
+asignar total a promedio
+dividir promedio y 5
+
+# Mostrar resultados
+mostrar === Resultados ===
+mostrar Calificaciones ingresadas:
+
+para cada nota en calificaciones
+    mostrar nota
+
+mostrar Total:
+mostrar total
+mostrar Promedio:
+mostrar promedio
+
+# Evaluacion
+si promedio mayor o igual que 70
+    mostrar APROBADO
+sino
+    mostrar REPROBADO
+
+terminar programa

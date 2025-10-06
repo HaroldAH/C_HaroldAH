@@ -1,0 +1,21 @@
+comenzar programa
+# Programa básico de bienvenida
+# Demuestra variables básicas y salida
+
+crear variable texto llamada nombre valor "Harold"
+crear variable entero llamada edad valor 25
+crear variable booleano llamada activo valor true
+
+mostrar "=== BIENVENIDO A C_HAROLDA ==="
+mostrar "Nombre:"
+mostrar nombre
+mostrar "Edad:"
+mostrar edad
+
+si activo igual a true
+    mostrar "Estado: ACTIVO"
+sino
+    mostrar "Estado: INACTIVO"
+
+mostrar "¡Programa ejecutado exitosamente!"
+terminar programa

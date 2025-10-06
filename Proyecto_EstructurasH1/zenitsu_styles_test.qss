@@ -1,0 +1,142 @@
+/* Paleta Zenitsu para C_HaroldA */
+
+/* Ventana principal */
+QMainWindow {
+    background-color: #0b0f14;
+    color: #fde68a;
+}
+
+QWidget {
+    background-color: #0b0f14;
+    color: #fde68a;
+}
+
+QLabel {
+    color: #fde68a;
+    font-weight: bold;
+}
+
+/* Áreas de texto */
+QTextEdit {
+    background-color: #111317;
+    color: #fde68a;
+    border: 1px solid #f59e0b;
+    border-radius: 4px;
+    padding: 8px;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+QTextEdit::placeholder {
+    color: #a16207;
+}
+
+/* Botones */
+QPushButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fbbf24, stop:1 #ea580c);
+    color: #0b0f14;
+    border: 1px solid #f59e0b;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: bold;
+    min-height: 20px;
+}
+
+QPushButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fcd34d, stop:1 #f97316);
+    box-shadow: 0 2px 4px rgba(245,158,11,0.25);
+}
+
+QPushButton:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #ea580c, stop:1 #fbbf24);
+}
+
+QPushButton:disabled {
+    background-color: #111317;
+    color: #a16207;
+    border-color: #a16207;
+}
+
+/* Menú */
+QMenuBar {
+    background-color: #111317;
+    color: #fde68a;
+    border-bottom: 1px solid #f59e0b;
+}
+
+QMenuBar::item {
+    background-color: transparent;
+    padding: 4px 8px;
+}
+
+QMenuBar::item:selected {
+    background-color: #f59e0b;
+    color: #0b0f14;
+}
+
+/* Toolbar */
+QToolBar {
+    background-color: #111317;
+    border: 1px solid #f59e0b;
+}
+
+/* Status Bar */
+QStatusBar {
+    background-color: #111317;
+    color: #fde68a;
+    border-top: 1px solid #f59e0b;
+}
+
+/* Diálogos */
+QMessageBox {
+    background-color: #111317;
+    color: #fde68a;
+}
+
+QMessageBox QPushButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fbbf24, stop:1 #ea580c);
+    color: #0b0f14;
+    border: 1px solid #f59e0b;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-weight: bold;
+    min-width: 60px;
+}
+
+QMessageBox QPushButton:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fcd34d, stop:1 #f97316);
+}
+
+/* File Dialog */
+QFileDialog {
+    background-color: #111317;
+    color: #fde68a;
+}
+
+QFileDialog QPushButton {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #fbbf24, stop:1 #ea580c);
+    color: #0b0f14;
+    border: 1px solid #f59e0b;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-weight: bold;
+}
+
+QFileDialog QListView {
+    background-color: #0b0f14;
+    color: #fde68a;
+    border: 1px solid #f59e0b;
+}
+
+QFileDialog QTreeView {
+    background-color: #0b0f14;
+    color: #fde68a;
+    border: 1px solid #f59e0b;
+}
+
+QFileDialog QLineEdit {
+    background-color: #111317;
+    color: #fde68a;
+    border: 1px solid #f59e0b;
+    border-radius: 3px;
+    padding: 4px;
+}

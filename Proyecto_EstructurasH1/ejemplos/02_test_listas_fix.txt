@@ -1,0 +1,13 @@
+comenzar programa
+comentario Prueba de listas corregida
+
+crear lista de enteros con 5 elementos llamada numeros
+asignar 10 a numeros en posicion 0
+asignar 25 a numeros en posicion 1
+
+mostrar Lista creada correctamente
+
+para cada num en numeros
+    mostrar num
+
+terminar programa

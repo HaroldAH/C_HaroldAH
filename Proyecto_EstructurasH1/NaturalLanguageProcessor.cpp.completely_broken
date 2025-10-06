@@ -1,0 +1,864 @@
+#include "stdafx.h"
+#include "NaturalLanguageProcessor.h"
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <algorithm>
+#include <cctype>
+#include <limits>
+
+// ==================== HELPER FUNCTIONS FOR DSL BLOCK HANDLING ====================
+
+static int countIndent(const std::string& s) {
+    int spaces = 0;
+    for (char c : s) {
+        if (c == ' ') spaces++;
+        else if (c == '\t') spaces += 4;
+        else break;
+    }
+    return spaces / 4;
+}
+
+static std::string trim_copy(std::string s) {
+    auto issp = [](unsigned char ch){return ch==' '||ch=='\t'||ch=='\r'||ch=='\n';};
+    while(!s.empty() && issp((unsigned char)s.front())) s.erase(s.begin());
+    while(!s.empty() && issp((unsigned char)s.back()))  s.pop_back();
+    return s;
+}
+
+static std::string lower_copy(std::string s){
+    std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){return (char)std::tolower(c);});
+    return s;
+}
+
+// Escapar string para C++
+static std::string escapeForCxxString(const std::string& s) {
+    std::string result;
+    result.reserve(s.size() + 10);
+    for (char c : s) {
+        if (c == '\\') result += "\\\\";
+        else if (c == '"') result += "\\\"";
+        else result += c;
+    }
+    return result;
+}
+
+// Reemplazo seguro de subcadenas (palabras completas)
+static void replace_word(std::string& s, const std::string& from, const std::string& to) {
+    std::string lower = lower_copy(s);
+    for (size_t pos = 0;;) {
+        pos = lower.find(from, pos);
+        if (pos == std::string::npos) break;
+        s.replace(pos, from.size(), to);
+        lower.replace(pos, from.size(), to);
+        pos += to.size();
+    }
+}
+
+static std::string toCppCondition(std::string cond) {
+    // normaliza espacios y minúsculas, pero mantenemos nombres/valores
+    // Reemplazos ordenados (de más largos a más cortos)
+    std::string w = " " + cond + " ";
+    replace_word(w, " mayor o igual que ", " >= ");
+    replace_word(w, " menor o igual que ", " <= ");
+    replace_word(w, " distinto de ",       " != ");
+    replace_word(w, " diferente de ",      " != ");
+    replace_word(w, " igual a ",           " == ");
+    replace_word(w, " mayor que ",         " > ");
+    replace_word(w, " menor que ",         " < ");
+    replace_word(w, " y ",                 " && ");
+    replace_word(w, " o ",                 " || ");
+    // ' no X' ? '!X'
+    for (size_t pos = w.find(" no "); pos != std::string::npos; pos = w.find(" no ", pos+1)) {
+        // elimina ' no ' y pone ' !'
+        w.replace(pos, 4, " !");
+    }
+    // compacta espacios
+    std::string out; out.reserve(w.size());
+    bool prevSpace=false;
+    for(char c: w){ bool sp=(c==' '||c=='\t'); if(!(sp && prevSpace)) out.push_back(sp?' ':c); prevSpace=sp; }
+    // quita espacios extremos
+    if(!out.empty() && out.front()==' ') out.erase(out.begin());
+    if(!out.empty() && out.back()==' ')  out.pop_back();
+    return out;
+}
+
+enum class BlockType { If, Else, While, DoUntil, For, Foreach };
+struct Block { BlockType type; int indent; std::string extra; };
+
+// ==================== END HELPER FUNCTIONS ====================
+
+NaturalLanguageProcessor::NaturalLanguageProcessor() 
+    : instructionCount(0), lastDSLok(false), lastCppOk(false) 
+{
+}
+
+NaturalLanguageProcessor::~NaturalLanguageProcessor() 
+{
+}
+
+bool NaturalLanguageProcessor::loadFile(const std::string& filePath)
+{
+    try {
+        // Limpiar estado anterior al inicio
+        clearErrors();
+        generatedCode.clear();
+        lists.reset();
+        
+        std::ifstream file(filePath);
+        if (!file.is_open()) {
+            addError("No se pudo abrir el archivo: " + filePath);
+            return false;
+        }
+        
+        inputContent.clear();
+        std::string line;
+        while (std::getline(file, line)) {
+            inputContent += line + "\n";
+        }
+        file.close();
+        
+        if (inputContent.empty()) {
+            addError("El archivo esta vacio");
+            return false;
+        }
+        
+        // Parsing protegido
+        try {
+            parseInstructions(inputContent);
+        }
+        catch (const std::exception& e) {
+            addError("Error al procesar instrucciones: " + std::string(e.what()));
+            return false;
+        }
+        catch (...) {
+            addError("Error desconocido al procesar instrucciones");
+            return false;
+        }
+        
+        return true;
+    }
+    catch (const std::exception& e) {
+        addError("Error al cargar archivo: " + std::string(e.what()));
+        return false;
+    }
+    catch (...) {
+        addError("Error desconocido al cargar archivo");
+        return false;
+    }
+}
+
+bool NaturalLanguageProcessor::saveToFile(const std::string& filePath)
+{
+    std::ofstream file(filePath);
+    if (!file.is_open()) {
+        addError("No se pudo crear el archivo: " + filePath);
+        return false;
+    }
+    
+    file << generatedCode;
+    file.close();
+    return true;
+}
+
+std::string NaturalLanguageProcessor::getInputContent() const
+{
+    return inputContent;
+}
+
+void NaturalLanguageProcessor::setInputContent(const std::string& content) 
+{
+    inputContent = content;
+}
+
+bool NaturalLanguageProcessor::validateDSLOnly(const std::string& content)
+{
+    // Guarda el estado anterior
+    std::string oldContent = inputContent;
+    
+    // Establece el nuevo contenido temporalmente
+    inputContent = content;
+    errors.clear();
+    
+    // Valida solo DSL
+    bool result = validateInputSyntax();
+    
+    // Restaura contenido (pero NO errors - queremos mantener los errores encontrados)
+    inputContent = oldContent;
+    
+    return result;
+}
+
+bool NaturalLanguageProcessor::processText(const std::string& input) 
+{
+    try {
+        if (input.empty()) {
+            addError("El texto de entrada esta vacio");
+            return false;
+        }
+        
+        // Limpiar estado anterior al inicio
+        clearErrors();
+        generatedCode.clear();
+        lists.reset();
+        
+        inputContent = input;
+        
+        // VALIDAR DSL ANTES DE PROCESAR - MANEJO SEGURO SIN CRASH
+        try {
+            if (!validateInputSyntax()) {
+                lastDSLok = false;
+                return false;  // NO CRASH - solo retorna false
+            }
+            
+            lastDSLok = true;
+            
+            // Parsing protegido
+            try {
+                parseInstructions(input);
+            }
+            catch (const std::exception& e) {
+                addError("Error al parsear instrucciones: " + std::string(e.what()));
+                lastDSLok = false;
+                return false;
+            }
+            catch (...) {
+                addError("Error desconocido al parsear instrucciones");
+                lastDSLok = false;
+                return false;
+            }
+            
+            // Generación protegida
+            try {
+                generateCode();
+            }
+            catch (const std::exception& e) {
+                addError("Error al generar codigo: " + std::string(e.what()));
+                return false;
+            }
+            catch (...) {
+                addError("Error desconocido al generar codigo");
+                return false;
+            }
+            
+            // Validación protegida
+            try {
+                validateCode();
+            }
+            catch (const std::exception& e) {
+                addError("Error al validar codigo: " + std::string(e.what()));
+                return false;
+            }
+            catch (...) {
+                addError("Error desconocido al validar codigo");
+                return false;
+            }
+            
+            return errors.getSize() == 0;
+        }
+        catch (const std::exception& e) {
+            addError("Error durante validacion DSL: " + std::string(e.what()));
+            lastDSLok = false;
+            return false;
+        }
+        catch (...) {
+            addError("Error desconocido durante validacion DSL");
+            lastDSLok = false;
+            return false;
+        }
+    }
+    catch (const std::exception& e) {
+        addError("Error interno durante el procesamiento: " + std::string(e.what()));
+        lastDSLok = false;
+        return false;
+    }
+    catch (...) {
+        addError("Error interno desconocido durante el procesamiento");
+        lastDSLok = false;
+        return false;
+    }
+}
+
+void NaturalLanguageProcessor::processInstructions()
+{
+    try {
+        clearErrors();                 // limpia errores anteriores
+        lastDSLok = validateInputSyntax();  // 1) valida el TXT/DSL primero
+
+        if (!lastDSLok) {
+            generatedCode.clear();     // no generes nada si el DSL es inválido
+            // NO HACER THROW O CRASH - solo retornar graciosamente
+            return;
+        }
+
+        generateCode();                // 2) genera C++
+        // 3) valida C++ generado
+        lastCppOk = validateSyntax(generatedCode);
+    }
+    catch (...) {
+        addError("Error interno durante el procesamiento de instrucciones");
+        lastDSLok = false;
+        lastCppOk = false;
+        generatedCode.clear();
+    }
+}
+
+std::string NaturalLanguageProcessor::convertToCode(const std::string& naturalLanguage) 
+{
+    std::string code;
+    
+    if (naturalLanguage.find("crear variable") != std::string::npos) {
+        code += "int variable;\n";
+    }
+    if (naturalLanguage.find("mostrar") != std::string::npos) {
+        code += "std::cout << \"Hola Mundo\" << std::endl;\n";
+    }
+    
+    generatedCode = code;
+    return code;
+}
+
+bool NaturalLanguageProcessor::validateSyntax()
+{
+    return validateSyntax(generatedCode);
+}
+
+bool NaturalLanguageProcessor::validateSyntax(const std::string& code) 
+{
+    try {
+        // QUITADO: clearErrors(); // <- No limpiar aquí, ya limpiamos al iniciar el proceso.
+
+        if (code.empty()) {
+            addError("El codigo esta vacio");
+            lastCppOk = false;
+            return false;
+        }
+
+        int brace=0, paren=0;
+        bool inString=false, inChar=false, escape=false;
+
+        std::istringstream iss(code);
+        std::string line;
+
+        while (std::getline(iss, line)) {
+            for (size_t i=0; i<line.size(); ++i) {
+                char c = line[i];
+                if (escape) { escape=false; continue; }
+
+                if (inString) { 
+                    if (c=='\\') escape=true; 
+                    else if (c=='"') inString=false; 
+                    continue; 
+                }
+                if (inChar) { 
+                    if (c=='\\') escape=true; 
+                    else if (c=='\'') inChar=false; 
+                    continue; 
+                }
+
+                if (c=='"') { inString=true; continue; }
+                if (c=='\'') { inChar=true; continue; }
+
+                if (c=='{') ++brace;
+                else if (c=='}') --brace;
+                else if (c=='(') ++paren;
+                else if (c==')') --paren;
+            }
+        }
+
+        if (brace!=0) addError("Llaves no balanceadas");
+        if (paren!=0) addError("Parentesis no balanceados");
+        if (inString) addError("Comillas dobles no cerradas");
+        if (inChar) addError("Comillas simples no cerradas");
+
+        lastCppOk = (errors.getSize()==0);
+        return lastCppOk;
+    }
+    catch (...) {
+        addError("Error interno durante la validacion de sintaxis C++");
+        lastCppOk = false;
+        return false;
+    }
+}
+
+bool NaturalLanguageProcessor::validateInputSyntax()
+{
+    try {
+        // NO borrar errores aquí si processInstructions() ya llamó clearErrors().
+        if (inputContent.empty()) {
+            addError("El archivo esta vacio");
+            lastDSLok = false;
+            return false;
+        }
+
+        auto to_lower_copy = [](const std::string& s){
+            std::string r = s;
+            std::transform(r.begin(), r.end(), r.begin(),
+                           [](unsigned char ch){ return std::tolower(ch); });
+            return r;
+        };
+        auto trim = [](std::string& s){
+            size_t a = s.find_first_not_of(" \t\r\n");
+            size_t b = s.find_last_not_of(" \t\r\n");
+            if (a==std::string::npos) { s.clear(); return; }
+            s = s.substr(a, b-a+1);
+        };
+        auto is_identifier = [](const std::string& s){
+            if (s.empty()) return false;
+            if (!(std::isalpha((unsigned char)s[0]) || s[0]=='_')) return false;
+            for (char c: s) {
+                if (!(std::isalnum((unsigned char)c) || c=='_')) return false;
+            }
+            return true;
+        };
+        auto read_identifier_after = [](const std::string& lower, const std::string& original, const std::string& keyword){
+            size_t pos = lower.find(keyword);
+            if (pos == std::string::npos) return std::string();
+            pos += keyword.size();
+            while (pos < original.size() && (original[pos]==' ' || original[pos]=='\t')) pos++;
+            size_t start = pos;
+            while (pos < original.size() && (std::isalnum((unsigned char)original[pos]) || original[pos]=='_')) pos++;
+            if (pos>start) return original.substr(start, pos-start);
+            return std::string();
+        };
+        auto read_value_after = [](const std::string& lower, const std::string& original, const std::string& keyword){
+            size_t pos = lower.find(keyword);
+            if (pos == std::string::npos) return std::string();
+            pos += keyword.size();
+            while (pos < original.size() && (original[pos]==' ' || original[pos]=='\t')) pos++;
+            std::string value = original.substr(pos);
+            // recorta trailing
+            size_t last = value.find_last_not_of(" \t\r\n");
+            if (last != std::string::npos) value.erase(last+1);
+            return value;
+        };
+        auto extract_ints = [](const std::string& str, int out[], int maxn){
+            std::string cleaned = str;
+            for (char& c : cleaned)
+                if (!std::isdigit((unsigned char)c) && c!=' ' && c!='\t') c=' ';
+            std::istringstream iss(cleaned);
+            int count=0, num;
+            while (count<maxn && (iss>>num)) out[count++]=num;
+            return count;
+        };
+
+        std::istringstream iss(inputContent);
+        std::string line;
+        int lineNo = 0;
+        while (std::getline(iss, line)) {
+            lineNo++;
+            std::string raw = line;
+            trim(raw);
+            if (raw.empty() || raw[0]=='#') continue;
+
+            std::string lower = to_lower_copy(raw);
+            bool recognized = false;
+
+            // COMENTARIO - NUEVO
+            if (lower.rfind("comentario ", 0) == 0) {
+                recognized = true;
+            }
+
+            // CREAR VARIABLE ...
+            else if (lower.find("crear variable") != std::string::npos) {
+                recognized = true;
+                bool hasType = (lower.find("entero")!=std::string::npos ||
+                                lower.find("decimal")!=std::string::npos ||
+                                lower.find("texto")!=std::string::npos ||
+                                lower.find("caracter")!=std::string::npos ||
+                                lower.find("booleano")!=std::string::npos);
+                if (!hasType) addError("L" + std::to_string(lineNo) + ": falta el tipo en 'crear variable'.");
+
+                std::string name = read_identifier_after(lower, raw, "llamada ");
+                if (!is_identifier(name)) addError("L" + std::to_string(lineNo) + ": identificador invalido o ausente en 'llamada'.");
+
+                if (lower.find("entero")!=std::string::npos) {
+                    std::string v = read_value_after(lower, raw, "valor ");
+                    if (!v.empty()) {
+                        try { (void)std::stoi(v); } catch(...) {
+                            addError("L" + std::to_string(lineNo) + ": valor entero invalido.");
+                        }
+                    }
+                } else if (lower.find("decimal")!=std::string::npos) {
+                    std::string v = read_value_after(lower, raw, "valor ");
+                    if (!v.empty()) {
+                        try { (void)std::stod(v); } catch(...) {
+                            addError("L" + std::to_string(lineNo) + ": valor decimal invalido.");
+                        }
+                    }
+                } else if (lower.find("booleano")!=std::string::npos) {
+                    std::string v = to_lower_copy(read_value_after(lower, raw, "valor "));
+                    if (!v.empty() && !(v=="true" || v=="false")) {
+                        addError("L" + std::to_string(lineNo) + ": booleano debe ser true/false.");
+                    }
+                } else if (lower.find("caracter")!=std::string::npos) {
+                    std::string v = read_value_after(lower, raw, "valor ");
+                    if (!v.empty() && v.size()!=1) {
+                        addError("L" + std::to_string(lineNo) + ": caracter debe ser un unico simbolo.");
+                    }
+                }
+            }
+            // CREAR LISTA/ARREGLO ...
+            else if (lower.find("crear lista") != std::string::npos || lower.find("crear arreglo") != std::string::npos) {
+                recognized = true;
+                int nums[5]; int c = extract_ints(raw, nums, 5);
+                if (c==0 || nums[0] <= 0) {
+                    addError("L" + std::to_string(lineNo) + ": tamano de lista/arreglo invalido o ausente.");
+                }
+                std::string name = read_identifier_after(lower, raw, "llamada ");
+                if (!name.empty() && !is_identifier(name)) {
+                    addError("L" + std::to_string(lineNo) + ": identificador de lista invalido.");
+                }
+                bool typed = (lower.find("enteros")!=std::string::npos ||
+                              lower.find("decimales")!=std::string::npos ||
+                              lower.find("texto")!=std::string::npos ||
+                              lower.find("caracteres")!=std::string::npos);
+                if (!typed) addError("L" + std::to_string(lineNo) + ": especifique el tipo de la lista (enteros/decimales/texto/caracteres).");
+            }
+            // OPERACIONES + "mostrar resultado" - Validación estricta de números
+            else if ((lower.find("sumar")!=std::string::npos ||
+                      lower.find("restar")!=std::string::npos ||
+                      lower.find("multiplicar")!=std::string::npos ||
+                      lower.find("dividir")!=std::string::npos) &&
+                     lower.find("mostrar resultado")!=std::string::npos) {
+
+                recognized = true;
+
+                auto isPureInt = [](const std::string& tok)->bool {
+                    if (tok.empty()) return false;
+                    size_t i = 0;
+                    if (tok[0]=='+' || tok[0]=='-') i = 1;
+                    if (i >= tok.size()) return false;
+                    for (; i<tok.size(); ++i) {
+                        unsigned char ch = (unsigned char)tok[i];
+                        if (!std::isdigit(ch)) return false;
+                    }
+                    return true;
+                };
+                auto lowerTok = [](std::string s){
+                    std::transform(s.begin(), s.end(), s.begin(),
+                                   [](unsigned char c){ return (char)std::tolower(c); });
+                    return s;
+                };
+
+                std::istringstream issTokens(raw);
+                std::string tok;
+                int numsFound = 0;
+                bool badNumericToken = false;
+
+                while (issTokens >> tok) {
+                    std::string lt = lowerTok(tok);
+                    if (lt == "y") continue; // conector permitido
+
+                    bool hasDigit = false;
+                    for (char c: tok) if (std::isdigit((unsigned char)c)) { hasDigit = true; break; }
+
+                    if (hasDigit) {
+                        if (!isPureInt(tok)) { // ej. "1d0", "10," etc.
+                            badNumericToken = true;
+                            break;
+                        }
+                        // es entero puro
+                        numsFound++;
+                    }
+                }
+
+                if (badNumericToken) {
+                    addError("L" + std::to_string(lineNo) + ": numero invalido en la operacion (use enteros puros: 10 20 30).");
+                } else if (numsFound < 2) {
+                    addError("L" + std::to_string(lineNo) + ": se requieren al menos 2 numeros para la operacion.");
+                }
+            }
+            // ASIGNAR con o sin VALOR - ACTUALIZADO
+            else if (lower.rfind("asignar ", 0) == 0) {
+                recognized = true;
+
+                size_t startVal = 8; // después de "asignar "
+                if (lower.find("valor ", startVal) == startVal) startVal += 6;
+
+                size_t aPos = lower.find(" a ", startVal);
+                if (aPos == std::string::npos) {
+                    addError("L" + std::to_string(lineNo) + ": falta ' a ' en asignacion.");
+                } else {
+                    std::string varName = raw.substr(aPos + 3);
+                    trim(varName);
+                    
+                    if (varName.empty()) {
+                        addError("L" + std::to_string(lineNo) + ": destino de asignacion vacio.");
+                    } else if (varName.find(" en posicion ") == std::string::npos) {
+                        // permitir identificador simple
+                        if (!is_identifier(varName)) {
+                            addError("L" + std::to_string(lineNo) + ": identificador invalido en asignacion.");
+                        }
+                    }
+                }
+            }
+            // FOR CLÁSICO o PARA - ACTUALIZADO
+            else if ((lower.rfind("for ",0)==0 || lower.rfind("para ",0)==0) &&
+                     lower.find(" desde ") != std::string::npos &&
+                     lower.find(" hasta ") != std::string::npos) {
+                recognized = true;
+                size_t desdePos = lower.find(" desde ");
+                size_t hastaPos = lower.find(" hasta ");
+                size_t startPos = (lower.rfind("for ",0)==0) ? 4 : 5;
+                std::string id = trim_copy(raw.substr(startPos, desdePos-startPos));
+                std::string ini = trim_copy(raw.substr(desdePos+7, hastaPos-(desdePos+7)));
+                std::string rest = raw.substr(hastaPos+7);
+                std::string paso;
+                size_t pasoPos = lower_copy(rest).find(" paso ");
+                std::string fin = rest;
+                if (pasoPos != std::string::npos) {
+                    fin  = trim_copy(rest.substr(0, pasoPos));
+                    paso = trim_copy(rest.substr(pasoPos+6));
+                } else {
+                    fin = trim_copy(fin);
+                }
+                // si no hay paso, dedúcelo
+                std::string stepExpr = !paso.empty() ? paso : ("((" + ini + ")<=(" + fin + ")?1:-1)");
+                generatedCode += "    " + std::string(ind*4, ' ') + "for (int " + id + " = " + ini + "; ((" + stepExpr + ")>0 ? " + id + " <= " + fin + " : " + id + " >= " + fin + "); " + id + " += " + stepExpr + ") {\n";
+                Block b; b.type = BlockType::For; b.indent = ind; b.extra = "";
+                stack.push(b);
+                continue;
+            }
+            
+            // PARA CADA
+            if (low.rfind("para cada ",0)==0 && low.find(" en ")!=std::string::npos) {
+                size_t enPos = low.find(" en ");
+                std::string item = trim_copy(raw.substr(10, enPos-10));
+                std::string list = trim_copy(raw.substr(enPos+4));
+                // busca tamaño conocido
+                int arrSize = 0;
+                const Symbol* sym = symbols.find(list);
+                if (sym && sym->isArray) arrSize = sym->size;
+                
+                std::string idx = "__i" + std::to_string(foreachIdxCounter++);
+                std::string bound;
+                if (arrSize > 0) {
+                    bound = std::to_string(arrSize);
+                } else {
+#if defined(_MSC_VER)
+                    bound = "(int)_countof(" + list + ")";
+#else
+                    bound = "(int)(sizeof(" + list + ")/sizeof(" + list + "[0]))";
+#endif
+                }
+                generatedCode += "    " + std::string(ind*4, ' ') + "for (int " + idx + " = 0; " + idx + " < " + bound + "; ++" + idx + ") {\n";
+                generatedCode += "    " + std::string((ind+1)*4, ' ') + "auto " + item + " = " + list + "[" + idx + "];\n";
+                Block b; b.type = BlockType::Foreach; b.indent = ind; b.extra = "";
+                stack.push(b);
+                continue;
+            }
+            
+            // CREAR VARIABLE con parsing seguro
+            if (low.find("crear variable") != std::string::npos) {
+                std::string name = read_identifier_after(low, raw, "llamada ");
+                std::string value = read_value_after(low, raw, "valor ");
+                
+                if (low.find("entero") != std::string::npos) {
+                    if (name.empty()) name = "numero";
+                    int val = 0;
+                    if (!value.empty()) {
+                        if (!tryParseInt(value, val)) {
+                            addError("Valor entero invalido en linea: " + raw);
+                            val = 0;
+                    }
+                    }
+                    generatedCode += "    " + std::string(ind*4, ' ') + "int " + name + " = " + std::to_string(val) + ";\n";
+                    Symbol s; s.name = name; s.type = "int"; s.isArray = false; s.size = 0;
+                    symbols.add(s);
+                }
+                else if (low.find("decimal") != std::string::npos) {
+                    if (name.empty()) name = "promedio";
+                    double val = 0.0;
+                    if (!value.empty()) {
+                        if (!tryParseDouble(value, val)) {
+                            addError("Valor decimal invalido en linea: " + raw);
+                            val = 0.0;
+                    }
+                    }
+                    generatedCode += "    " + std::string(ind*4, ' ') + "double " + name + " = " + std::to_string(val) + ";\n";
+                    Symbol s; s.name = name; s.type = "double"; s.isArray = false; s.size = 0;
+                    symbols.add(s);
+                }
+                else if (low.find("texto") != std::string::npos) {
+                    if (name.empty()) name = "nombre";
+                    std::string val;
+                    if (!value.empty()) val = value;
+                    generatedCode += "    " + std::string(ind*4, ' ') + "char " + name + "[128] = \"" + escapeForCxxString(val) + "\";\n";
+                    Symbol s; s.name = name; s.type = "char[]"; s.isArray = false; s.size = 128;
+                    symbols.add(s);
+                }
+                else if (low.find("caracter") != std::string::npos) {
+                    if (name.empty()) name = "inicial";
+                    char val = '\0';
+                    if (!value.empty()) val = value[0];
+                    generatedCode += "    " + std::string(ind*4, ' ') + "char " + name + " = '" + std::string(1, val) + "';\n";
+                    Symbol s; s.name = name; s.type = "char"; s.isArray = false; s.size = 0;
+                    symbols.add(s);
+                }
+                else if (low.find("booleano") != std::string::npos) {
+                    if (name.empty()) name = "activo";
+                    bool val = false;
+                    if (!value.empty() && value == "true") val = true;
+                    generatedCode += "    " + std::string(ind*4, ' ') + "bool " + name + " = " + (val ? "true" : "false") + ";\n";
+                    Symbol s; s.name = name; s.type = "bool"; s.isArray = false; s.size = 0;
+                    symbols.add(s);
+                }
+                continue;
+            }
+            
+            // CREAR LISTA/ARREGLO
+            if (low.find("crear lista") != std::string::npos || low.find("crear arreglo") != std::string::npos) {
+                std::string name = read_identifier_after(low, raw, "llamada ");
+                int nums[5];
+                int count = extract_ints(raw, nums, 5);
+                int size = (count > 0) ? nums[0] : 5;
+                
+                if (size <= 0) {
+                    addError("Tamaño de lista invalido en linea: " + raw);
+                    size = 1;
+                }
+                
+                if (low.find("enteros") != std::string::npos) {
+                    if (name.empty()) name = "lista" + std::to_string(listaIdx++);
+                    generatedCode += "    " + std::string(ind*4, ' ') + "int " + name + "[" + std::to_string(size) + "] = {0};\n";
+                    Symbol s; s.name = name; s.type = "int"; s.isArray = true; s.size = size;
+                    symbols.add(s);
+                }
+                else if (low.find("decimales") != std::string::npos) {
+                    if (name.empty()) name = "promedios";
+                    generatedCode += "    " + std::string(ind*4, ' ') + "double " + name + "[" + std::to_string(size) + "] = {0.0};\n";
+                    Symbol s; s.name = name; s.type = "double"; s.isArray = true; s.size = size;
+                    symbols.add(s);
+                }
+                else if (low.find("texto") != std::string::npos) {
+                    if (name.empty()) name = "nombres";
+                    generatedCode += "    " + std::string(ind*4, ' ') + "string " + name + "[" + std::to_string(size) + "];\n";
+                    Symbol s; s.name = name; s.type = "string"; s.isArray = true; s.size = size;
+                    symbols.add(s);
+                }
+                else if (low.find("caracteres") != std::string::npos) {
+                    if (name.empty()) name = "iniciales";
+                    generatedCode += "    " + std::string(ind*4, ' ') + "char " + name + "[" + std::to_string(size) + "] = {0};\n";
+                    Symbol s; s.name = name; s.type = "char"; s.isArray = true; s.size = size;
+                    symbols.add(s);
+                }
+                continue;
+            }
+            
+            // E/S - con soporte para char[]
+            if (low.find("leer") != std::string::npos || low.find("ingresar") != std::string::npos) {
+                std::istringstream issTokens(raw);
+                std::string token;
+                bool found = false;
+                while (issTokens >> token && !found) {
+                    const Symbol* sym = symbols.find(token);
+                    if (sym && !sym->isArray) {
+                        if (sym->type == "char[]") {
+                            generatedCode += "    " + std::string(ind*4, ' ') + "cin.ignore(10000, '\\n');\n";
+                            generatedCode += "    " + std::string(ind*4, ' ') + "cin.getline(" + sym->name + ", 128);\n";
+                    } else {
+                        generatedCode += "    " + std::string(ind*4, ' ') + "cin >> " + sym->name + ";\n";
+                    }
+                    found = true;
+                }
+                continue;
+            }
+            
+            if (low.find("mostrar") != std::string::npos || low.find("imprimir") != std::string::npos) {
+                bool foundVar = false;
+                std::istringstream issTokens(raw);
+                std::string token;
+                while (issTokens >> token && !foundVar) {
+                    const Symbol* sym = symbols.find(token);
+                    if (sym && !sym->isArray) {
+                        generatedCode += "    " + std::string(ind*4, ' ') + "cout << " + sym->name + " << endl;\n";
+                        foundVar = true;
+                    }
+                }
+                
+                if (!foundVar) {
+                    size_t pos = low.find("mostrar");
+                    if (pos == std::string::npos) pos = low.find("imprimir");
+                    pos += (low.find("mostrar") != std::string::npos) ? 7 : 8;
+                    
+                    std::string message;
+                    if (safeSubstr(raw, pos, raw.length() - pos, message)) {
+                        message.erase(0, message.find_first_not_of(" \t"));
+                        message.erase(message.find_last_not_of(" \t") + 1);
+                        
+                        if (!message.empty() && message[0] == ':') {
+                            std::string temp;
+                            if (safeSubstr(message, 1, message.length() - 1, temp)) {
+                                message = temp;
+                                message.erase(0, message.find_first_not_of(" \t"));
+                            }
+                        }
+                        
+                        if (!message.empty()) {
+                            generatedCode += "    " + std::string(ind*4, ' ') + "cout << \"" + escapeForCxxString(message) + "\" << endl;\n";
+                        }
+                    }
+                }
+                continue;
+            }
+
+            // ASIGNAR con o sin 'valor'
+            if (low.rfind("asignar ", 0) == 0) {
+                std::string lowerRaw = lower_copy(raw);
+                size_t startVal = 8;
+                if (lowerRaw.find("valor ", startVal) == startVal) startVal += 6;
+
+                size_t aPos = lowerRaw.find(" a ", startVal);
+                if (aPos != std::string::npos) {
+                    std::string value, varName;
+                    if (safeSubstr(raw, startVal, aPos - startVal, value) &&
+                        safeSubstr(raw, aPos + 3, raw.length() - (aPos + 3), varName)) {
+
+                        value.erase(0, value.find_first_not_of(" \t"));
+                        value.erase(value.find_last_not_of(" \t") + 1);
+                        varName.erase(0, varName.find_first_not_of(" \t"));
+                        varName.erase(varName.find_last_not_of(" \t") + 1);
+
+                        size_t posPos = lower_copy(varName).find(" en posicion ");
+                        if (posPos != std::string::npos) {
+                            std::string arrName = varName.substr(0, posPos);
+                            std::string indexStr = varName.substr(posPos + 13);
+                            arrName.erase(arrName.find_last_not_of(" \t") + 1);
+                            indexStr.erase(0, indexStr.find_first_not_of(" \t"));
+                            generatedCode += "    " + std::string(ind*4, ' ') + arrName + "[" + indexStr + "] = " + value + ";\n";
+                        } else {
+                            generatedCode += "    " + std::string(ind*4, ' ') + varName + " = " + value + ";\n";
+                        }
+                    } else {
+                        addError("Error de sintaxis en asignacion: " + raw);
+                    }
+                }
+                continue;
+            }
+            
+            // Código estándar (sin correspondencia específica en DSL)
+            addError("Instruccion no reconocida: " + raw);
+            generatedCode += "    " + std::string(ind*4, ' ') + "// Instruccion no reconocida: " + raw + "\n";
+        }
+        catch (const std::exception& e) {
+            addError("Error procesando linea: " + std::string(e.what()));
+        }
+        catch (...) {
+            addError("Error desconocido procesando linea");
+        }
+    }
+    
+    // Cerrar bloques restantes
+    closeBlocksTo(0);
+    
+    generatedCode += "    return 0;\n";
+    generatedCode += "}\n";
+}
+catch (const std::exception& e) {
+    addError("Error interno durante la generacion de codigo: " + std::string(e.what()));
+}
+catch (...) {
+    addError("Error interno desconocido durante la generacion de codigo");
+}
+}

@@ -1,0 +1,348 @@
+comenzar programa
+comentario Ejemplo de casos de uso reales para el DSL
+comentario Demuestra aplicaciones practicas en diferentes contextos
+
+mostrar =============================================
+mostrar         CASOS DE USO REALES
+mostrar       Aplicaciones Practicas DSL
+mostrar =============================================
+
+comentario CASO 1: SISTEMA DE GESTION DE INVENTARIO
+mostrar === 1. SISTEMA DE INVENTARIO ===
+
+comentario Datos de productos
+crear lista de texto con 4 elementos llamada nombres_productos
+crear lista de enteros con 4 elementos llamada cantidades
+crear lista de decimales con 4 elementos llamada precios
+
+asignar Laptop Dell a nombres_productos en posicion 0
+asignar Mouse Logitech a nombres_productos en posicion 1
+asignar Teclado Mecanico a nombres_productos en posicion 2
+asignar Monitor 24 pulgadas a nombres_productos en posicion 3
+
+asignar 15 a cantidades en posicion 0
+asignar 45 a cantidades en posicion 1
+asignar 22 a cantidades en posicion 2
+asignar 8 a cantidades en posicion 3
+
+asignar 899.99 a precios en posicion 0
+asignar 25.50 a precios en posicion 1
+asignar 125.75 a precios en posicion 2
+asignar 199.99 a precios en posicion 3
+
+crear variable decimal llamada valor_total_inventario valor 0.0
+crear variable entero llamada productos_bajo_stock valor 0
+crear variable entero llamada stock_minimo valor 10
+
+mostrar REPORTE DE INVENTARIO
+mostrar =====================
+
+for i desde 0 hasta 3 paso 1
+    mostrar Procesando producto del inventario
+
+comentario Simular calculos
+asignar 18234.18 a valor_total_inventario
+asignar 1 a productos_bajo_stock
+
+mostrar Valor total del inventario:
+mostrar valor_total_inventario
+mostrar Productos bajo stock minimo:
+mostrar productos_bajo_stock
+
+si productos_bajo_stock mayor que 0
+    mostrar ALERTA: Reabastecer productos con bajo stock
+sino
+    mostrar Stock suficiente en todos los productos
+
+comentario CASO 2: SISTEMA DE CALIFICACIONES ESTUDIANTILES
+mostrar === 2. SISTEMA ACADEMICO ===
+
+crear lista de texto con 5 elementos llamada estudiantes
+crear lista de decimales con 5 elementos llamada promedios_estudiantes
+
+asignar Maria Gonzalez a estudiantes en posicion 0
+asignar Carlos Lopez a estudiantes en posicion 1
+asignar Ana Martinez a estudiantes en posicion 2
+asignar Jose Rodriguez a estudiantes en posicion 3
+asignar Laura Fernandez a estudiantes en posicion 4
+
+asignar 8.5 a promedios_estudiantes en posicion 0
+asignar 9.2 a promedios_estudiantes en posicion 1
+asignar 7.8 a promedios_estudiantes en posicion 2
+asignar 9.5 a promedios_estudiantes en posicion 3
+asignar 6.9 a promedios_estudiantes en posicion 4
+
+crear variable decimal llamada promedio_grupo valor 0.0
+crear variable entero llamada aprobados valor 0
+crear variable entero llamada reprobados valor 0
+crear variable decimal llamada nota_aprobacion valor 7.0
+
+mostrar REPORTE ACADEMICO - GRUPO 2024A
+mostrar ================================
+
+para cada promedio en promedios_estudiantes
+    sumar promedio_grupo y promedio
+
+dividir promedio_grupo y 5
+
+comentario Simulacion de conteo aprobados/reprobados
+asignar 4 a aprobados
+asignar 1 a reprobados
+
+mostrar Promedio general del grupo:
+mostrar promedio_grupo
+mostrar Estudiantes aprobados:
+mostrar aprobados
+mostrar Estudiantes reprobados:
+mostrar reprobados
+
+crear variable decimal llamada porcentaje_aprobacion valor 0.0
+asignar aprobados a porcentaje_aprobacion
+multiplicar porcentaje_aprobacion y 20.0
+
+mostrar Porcentaje de aprobacion:
+mostrar porcentaje_aprobacion
+
+si porcentaje_aprobacion mayor o igual que 80.0
+    mostrar Grupo con BUEN rendimiento academico
+sino
+    mostrar Grupo requiere APOYO ADICIONAL
+
+comentario CASO 3: CONTROL DE EMPLEADOS Y NOMINA
+mostrar === 3. SISTEMA DE NOMINA ===
+
+crear lista de texto con 4 elementos llamada empleados
+crear lista de decimales con 4 elementos llamada salarios_base
+crear lista de decimales con 4 elementos llamada horas_extra
+crear lista de caracteres con 4 elementos llamada turnos
+
+asignar Pedro Sanchez a empleados en posicion 0
+asignar Sofia Morales a empleados en posicion 1
+asignar Roberto Kim a empleados en posicion 2
+asignar Elena Vargas a empleados en posicion 3
+
+asignar 2500.00 a salarios_base en posicion 0
+asignar 2800.00 a salarios_base en posicion 1
+asignar 2300.00 a salarios_base en posicion 2
+asignar 3000.00 a salarios_base en posicion 3
+
+asignar 8.5 a horas_extra en posicion 0
+asignar 12.0 a horas_extra en posicion 1
+asignar 5.5 a horas_extra en posicion 2
+asignar 15.0 a horas_extra en posicion 3
+
+comentario Asignar turnos
+asignar M a turnos en posicion 0
+asignar T a turnos en posicion 1
+asignar N a turnos en posicion 2
+asignar M a turnos en posicion 3
+
+crear variable decimal llamada pago_hora_extra valor 50.00
+crear variable decimal llamada total_nomina valor 0.0
+
+mostrar CALCULO DE NOMINA - ENERO 2024
+mostrar ===============================
+
+for empleado_idx desde 0 hasta 3 paso 1
+    mostrar Procesando empleado de nomina
+
+comentario Simulacion de calculo total
+crear variable decimal llamada extras_totales valor 0.0
+asignar 8.5 a extras_totales
+sumar extras_totales y 12.0
+sumar extras_totales y 5.5
+sumar extras_totales y 15.0
+
+multiplicar extras_totales y pago_hora_extra
+
+crear variable decimal llamada salarios_totales valor 0.0
+asignar 2500.00 a salarios_totales
+sumar salarios_totales y 2800.00
+sumar salarios_totales y 2300.00
+sumar salarios_totales y 3000.00
+
+asignar salarios_totales a total_nomina
+sumar total_nomina y extras_totales
+
+mostrar Total en salarios base:
+mostrar salarios_totales
+mostrar Total en horas extra:
+mostrar extras_totales
+mostrar TOTAL NOMINA:
+mostrar total_nomina
+
+comentario CASO 4: SISTEMA DE FACTURACION
+mostrar === 4. SISTEMA DE FACTURACION ===
+
+crear variable texto llamada cliente valor Empresa XYZ SA
+crear variable entero llamada numero_factura valor 2024001
+crear lista de texto con 3 elementos llamada descripcion_items
+crear lista de enteros con 3 elementos llamada cantidades_items
+crear lista de decimales con 3 elementos llamada precios_unitarios
+
+asignar Servicio de consultoria a descripcion_items en posicion 0
+asignar Licencias de software a descripcion_items en posicion 1
+asignar Soporte tecnico a descripcion_items en posicion 2
+
+comentario Cantidades de cada item
+asignar 40 a cantidades_items en posicion 0
+asignar 5 a cantidades_items en posicion 1
+asignar 12 a cantidades_items en posicion 2
+
+asignar 75.00 a precios_unitarios en posicion 0
+asignar 120.00 a precios_unitarios en posicion 1
+asignar 200.00 a precios_unitarios en posicion 2
+
+crear variable decimal llamada subtotal valor 0.0
+crear variable decimal llamada iva valor 0.16
+crear variable decimal llamada total_iva valor 0.0
+crear variable decimal llamada total_factura valor 0.0
+
+mostrar FACTURA ELECTRONICA
+mostrar ===================
+mostrar Cliente:
+mostrar cliente
+mostrar Factura No:
+mostrar numero_factura
+
+mostrar DETALLE DE SERVICIOS:
+para cada desc en descripcion_items
+    mostrar desc
+
+comentario Calculo de totales
+asignar 6000.00 a subtotal
+asignar subtotal a total_iva
+multiplicar total_iva y iva
+
+asignar subtotal a total_factura
+sumar total_factura y total_iva
+
+mostrar Subtotal:
+mostrar subtotal
+mostrar IVA:
+mostrar total_iva
+mostrar TOTAL A PAGAR:
+mostrar total_factura
+
+si total_factura mayor que 5000.00
+    mostrar Cliente califica para descuento por volumen
+sino
+    mostrar Factura procesada correctamente
+
+comentario CASO 5: SISTEMA DE RESERVAS HOTELERAS
+mostrar === 5. SISTEMA HOTELERO ===
+
+crear lista de enteros con 5 elementos llamada habitaciones
+crear lista de texto con 5 elementos llamada tipos_habitacion
+crear lista de decimales con 5 elementos llamada tarifas_noche
+
+asignar 101 a habitaciones en posicion 0
+asignar 102 a habitaciones en posicion 1
+asignar 201 a habitaciones en posicion 2
+asignar 202 a habitaciones en posicion 3
+asignar 301 a habitaciones en posicion 4
+
+asignar Individual a tipos_habitacion en posicion 0
+asignar Doble a tipos_habitacion en posicion 1
+asignar Suite a tipos_habitacion en posicion 2
+asignar Familiar a tipos_habitacion en posicion 3
+asignar Presidencial a tipos_habitacion en posicion 4
+
+crear variable entero llamada habitaciones_disponibles valor 3
+crear variable entero llamada habitaciones_ocupadas valor 2
+crear variable decimal llamada ingreso_proyectado valor 0.0
+
+asignar 89.99 a tarifas_noche en posicion 0
+asignar 129.99 a tarifas_noche en posicion 1
+asignar 199.99 a tarifas_noche en posicion 2
+asignar 159.99 a tarifas_noche en posicion 3
+asignar 399.99 a tarifas_noche en posicion 4
+
+mostrar ESTADO DE HABITACIONES - HOTEL PLAZA
+mostrar =====================================
+
+for hab desde 0 hasta 4 paso 1
+    mostrar Verificando habitacion
+
+mostrar Habitaciones disponibles:
+mostrar habitaciones_disponibles
+mostrar Habitaciones ocupadas:
+mostrar habitaciones_ocupadas
+
+comentario Calculo de ocupacion
+crear variable decimal llamada porcentaje_ocupacion valor 0.0
+asignar habitaciones_ocupadas a porcentaje_ocupacion
+multiplicar porcentaje_ocupacion y 20.0
+
+mostrar Porcentaje de ocupacion:
+mostrar porcentaje_ocupacion
+
+si porcentaje_ocupacion menor que 50.0
+    mostrar Ocupacion BAJA - Activar promociones
+sino
+    si porcentaje_ocupacion mayor que 80.0
+        mostrar Ocupacion ALTA - Excelente
+    sino
+        mostrar Ocupacion NORMAL
+
+comentario CASO 6: CONTROL DE PRODUCCION
+mostrar === 6. CONTROL DE PRODUCCION ===
+
+crear variable entero llamada meta_diaria valor 1000
+crear variable entero llamada produccion_actual valor 750
+crear variable entero llamada horas_trabajadas valor 6
+crear variable entero llamada horas_restantes valor 2
+crear variable decimal llamada eficiencia valor 0.0
+
+asignar produccion_actual a eficiencia
+dividir eficiencia y meta_diaria
+multiplicar eficiencia y 100.0
+
+mostrar REPORTE DE PRODUCCION
+mostrar =====================
+mostrar Meta diaria:
+mostrar meta_diaria
+mostrar Produccion actual:
+mostrar produccion_actual
+mostrar Eficiencia actual:
+mostrar eficiencia
+
+crear variable entero llamada unidades_faltantes valor 0
+asignar meta_diaria a unidades_faltantes
+restar unidades_faltantes y produccion_actual
+
+mostrar Unidades faltantes:
+mostrar unidades_faltantes
+
+si horas_restantes mayor que 0
+    crear variable decimal llamada ritmo_requerido valor 0.0
+    asignar unidades_faltantes a ritmo_requerido
+    dividir ritmo_requerido y horas_restantes
+    
+    mostrar Ritmo requerido:
+    mostrar ritmo_requerido
+    
+    si ritmo_requerido mayor que 150.0
+        mostrar ALERTA: Ritmo muy alto
+    sino
+        mostrar Ritmo alcanzable con esfuerzo normal
+sino
+    mostrar Jornada laboral terminada
+
+comentario RESUMEN DE CASOS DE USO
+mostrar =============================================
+mostrar         CASOS DE USO IMPLEMENTADOS
+mostrar =============================================
+mostrar Gestion de inventario
+mostrar Sistema academico de calificaciones
+mostrar Control de nomina de empleados
+mostrar Sistema de facturacion
+mostrar Reservas hoteleras
+mostrar Control de produccion
+mostrar =============================================
+mostrar Estos ejemplos demuestran la versatilidad
+mostrar del DSL para aplicaciones empresariales
+mostrar y sistemas de gestion reales
+mostrar =============================================
+
+terminar programa

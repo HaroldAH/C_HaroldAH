@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8664EDEB-BC8B-48B8-8A8E-80DA7817AEEC}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>6.9.3_msvc2022_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>6.9.3_msvc2022_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <QtMoc>
+      <PrependInclude>stdafx.h;%(PrependInclude)</PrependInclude>
+    </QtMoc>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <QtMoc>
+      <PrependInclude>stdafx.h;%(PrependInclude)</PrependInclude>
+    </QtMoc>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\app\EditorController.cpp" />
+    <ClCompile Include="src\app\FileWatcherService.cpp" />
+    <ClCompile Include="src\app\ProcessingController.cpp" />
+    <ClCompile Include="src\ui\DSLAssistantPanel.cpp" />
+    <ClCompile Include="src\dsl\DslValidator.cpp" />
+    <ClCompile Include="DslList.cpp" />
+    <ClCompile Include="NaturalLanguageProcessor.cpp" />
+    <ClCompile Include="src\app\Proyecto_EstructurasH1_Actions.cpp" />
+    <ClCompile Include="src\app\Proyecto_EstructurasH1_FileWatch.cpp" />
+    <ClCompile Include="src\app\Proyecto_EstructurasH1_Utils.cpp" />
+    <ClCompile Include="src\ui\Proyecto_EstructurasH1_DSLAssistant.cpp" />
+    <ClCompile Include="src\ui\Proyecto_EstructurasH1_UI.cpp" />
+    <ClCompile Include="test_debug.cpp" />
+    <QtRcc Include="Proyecto_EstructurasH1.qrc" />
+    <QtUic Include="Proyecto_EstructurasH1.ui" />
+    <QtMoc Include="Proyecto_EstructurasH1.h" />
+    <ClCompile Include="Instruction.cpp" />
+    <ClCompile Include="main.cpp" />
+    <QtMoc Include="src\app\EditorController.h" />
+    <QtMoc Include="src\app\FileWatcherService.h" />
+    <QtMoc Include="src\app\ProcessingController.h" />
+    <QtMoc Include="src\ui\DSLAssistantPanel.h" />
+    <ClInclude Include="DslList.h" />
+    <ClInclude Include="Instruction.h" />
+    <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="NaturalLanguageProcessor.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="configuracion_proyecto.txt" />
+    <Text Include="ejemplo_avanzado.txt" />
+    <Text Include="ejemplo_avanzado_HaroldA.txt" />
+    <Text Include="ejemplo_lenguaje_natural.txt" />
+    <Text Include="ejemplo_lenguaje_natural_HaroldA.txt" />
+    <Text Include="pruebas_completas_HaroldA.txt" />
+    <Text Include="pruebas_funcionalidades.txt" />
+    <Text Include="prueba_simple.txt" />
+    <Text Include="prueba_sintaxis_invalida.txt" />
+    <Text Include="prueba_sintaxis_valida.txt" />
+    <Text Include="test_acumulacion_errores.txt" />
+    <Text Include="test_bloques_anidados.txt" />
+    <Text Include="test_edicion_tiempo_real.txt" />
+    <Text Include="test_errores_dsl.txt" />
+    <Text Include="test_errores_multiples.txt" />
+    <Text Include="test_errores_no_crash.txt" />
+    <Text Include="test_file_reload.txt" />
+    <Text Include="test_for_clasico.txt" />
+    <Text Include="test_for_paso.txt" />
+    <Text Include="test_if_sino.txt" />
+    <Text Include="test_listas_dsl.txt" />
+    <Text Include="test_mientras.txt" />
+    <Text Include="test_para_cada.txt" />
+    <Text Include="test_repetir_hasta.txt" />
+    <Text Include="test_sintaxis_correcta.txt" />
+    <Text Include="test_sintaxis_perfecta.txt" />
+    <Text Include="test_validacion_numerica.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="button_flow_implementation_summary.md" />
+    <None Include="cambios_zenitsu_summary.md" />
+    <None Include="commit_messages_zenitsu.md" />
+    <None Include="COMPILATION_ERRORS_FIXED.md" />
+    <None Include="COMPILATION_SUCCESS_SUMMARY.md" />
+    <None Include="COMPLETION_GUIDE.md" />
+    <None Include="DSL_ASSISTANT_COMPLETE_UPDATE.md" />
+    <None Include="dsl_assistant_final_success.md" />
+    <None Include="dsl_assistant_implementation.md" />
+    <None Include="dsl_assistant_summary.md" />
+    <None Include="DSL_CONTROL_FLOW_COMPLETE.md" />
+    <None Include="DSL_EXAMPLES_CHECKLIST.md" />
+    <None Include="DSL_EXAMPLES_COMPLETE.md" />
+    <None Include="DSL_EXAMPLES_INDEX.md" />
+    <None Include="DSL_EXAMPLES_QUICK_REFERENCE.md" />
+    <None Include="DSL_EXAMPLES_SUCCESS_SUMMARY.md" />
+    <None Include="DSL_GUIDE_UPDATED_COMPLETE.md" />
+    <None Include="DSL_GUIDE_UPDATE_SUMMARY.md" />
+    <None Include="FILE_RELOAD_IMPLEMENTATION.md" />
+    <None Include="FILE_RELOAD_IMPROVED_FINAL.md" />
+    <None Include="LINKEDLIST_OPTIMIZATIONS_FINAL.md" />
+    <None Include="MULTIPLE_SOURCE_FLOW_IMPLEMENTATION.md" />
+    <None Include="OPTIMIZATIONS_SUMMARY.md" />
+    <None Include="OPTIONAL_OPEN_EXAMPLES_BUTTON.md" />
+    <None Include="README.md" />
+    <None Include="REFACTORING_MODULAR_STATUS.md" />
+    <None Include="RELOAD_PROJECT_INSTRUCTIONS.md" />
+    <None Include="tools\refresh_examples.py" />
+    <None Include="VISUAL_GUIDE_RELOAD_PROJECT.md" />
+    <None Include="VISUAL_STUDIO_RELOAD_SOLUTION.md" />
+    <None Include="zenitsu_animations_implementation.md" />
+    <None Include="ZENITSU_FINAL_SUMMARY.md" />
+    <None Include="zenitsu_help_dialog_implementation.md" />
+    <None Include="zenitsu_shine_sweep_implementation.md" />
+    <None Include="zenitsu_styles_test.qss" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

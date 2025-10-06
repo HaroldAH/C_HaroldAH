@@ -1,0 +1,57 @@
+comenzar programa
+# Programa de operaciones aritmeticas
+# Demuestra todas las operaciones matematicas basicas
+
+mostrar "=== CALCULADORA C_HAROLDA ==="
+
+comentario Operaciones con resultado inmediato
+mostrar "Suma: 15 + 25 + 10 ="
+sumar 15 y 25 y 10 y mostrar resultado
+
+mostrar "Resta: 100 - 30 - 5 ="
+restar 100 y 30 y 5 y mostrar resultado
+
+mostrar "Multiplicacion: 8 x 7 x 2 ="
+multiplicar 8 y 7 y 2 y mostrar resultado
+
+mostrar "Division: 144 / 12 / 2 ="
+dividir 144 y 12 y 2 y mostrar resultado
+
+comentario Variables y operaciones acumulativas
+crear variable entero llamada total valor 0
+crear variable entero llamada contador valor 0
+
+mostrar "=== ACUMULACION ==="
+mostrar "Total inicial:"
+mostrar total
+
+comentario Sumar al total
+sumar total y 100
+mostrar "Despues de sumar 100:"
+mostrar total
+
+sumar total y 50
+mostrar "Despues de sumar 50:"
+mostrar total
+
+sumar total y 25
+mostrar "Despues de sumar 25:"
+mostrar total
+
+comentario Operaciones con decimales
+crear variable decimal llamada precio valor 99.99
+crear variable decimal llamada descuento valor 10.0
+
+mostrar "=== CALCULO DE PRECIO ==="
+mostrar "Precio original:"
+mostrar precio
+
+restar precio y descuento
+mostrar "Precio con descuento:"
+mostrar precio
+
+comentario Division por cero protegida
+mostrar "=== PRUEBA DIVISION POR CERO ==="
+dividir 100 y 0 y mostrar resultado
+
+terminar programa
